@@ -90,7 +90,17 @@ jobs:
 
           このプルリクエストは「Sync from template」ワークフローが作りました。" \
             || {
-              echo "::error::Pull Request を作れませんでした。Settings → Actions → General → Workflow permissions で「Allow GitHub Actions to create and approve pull requests」にチェックを入れて Save してください。取り込む内容はブランチ $BRANCH にできているので、次の URL から自分で Pull Request を作ることもできます：$COMPARE"
-              exit 1
+              # PR を作る許可がないとき（Settings の「Allow GitHub Actions to create and approve pull requests」がオフなど）は、
+              # 失敗にせず、自分で PR を作るリンクを実行結果のページに出す
+              echo "::warning::Pull Request を自動で作れませんでした。取り込む内容はブランチ $BRANCH にできています。実行結果のページのリンクから Pull Request を作ってください。"
+              {
+                echo "## 本家の更新を取り込む準備ができました"
+                echo ""
+                echo "取り込む内容はブランチ \`$BRANCH\` にできています。次のリンクを開いて **Create pull request** → **Merge pull request** を押すと取り込まれます。"
+                echo ""
+                echo "👉 [Pull Request を作る]($COMPARE)"
+                echo ""
+                echo "（次回から自動で Pull Request を作るには、Settings → Actions → General → Workflow permissions で「Allow GitHub Actions to create and approve pull requests」にチェックを入れて **Save** してください）"
+              } >> "$GITHUB_STEP_SUMMARY"
             }
           fi
