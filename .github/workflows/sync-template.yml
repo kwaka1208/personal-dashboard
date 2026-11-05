@@ -78,6 +78,7 @@ jobs:
       - name: Pull Request を作る（すでにあれば更新するだけ）
         if: steps.check.outputs.needed == 'true'
         run: |
+          COMPARE="${{ github.server_url }}/${{ github.repository }}/compare/${{ github.event.repository.default_branch }}...$BRANCH?expand=1"
           if [ -z "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
             gh pr create --head "$BRANCH" --base "${{ github.event.repository.default_branch }}" \
               --title "本家（テンプレート）の更新を取り込む" \
@@ -87,5 +88,9 @@ jobs:
           - \`public/js/firebase-config.js\` など自分専用のファイルは、衝突した場合は自分の内容を残しています
           - 本家で \`firestore.rules\` が変わったときは、Firebase コンソールのルールにも反映してください
 
-          このプルリクエストは「Sync from template」ワークフローが作りました。"
+          このプルリクエストは「Sync from template」ワークフローが作りました。" \
+            || {
+              echo "::error::Pull Request を作れませんでした。Settings → Actions → General → Workflow permissions で「Allow GitHub Actions to create and approve pull requests」にチェックを入れて Save してください。取り込む内容はブランチ $BRANCH にできているので、次の URL から自分で Pull Request を作ることもできます：$COMPARE"
+              exit 1
+            }
           fi

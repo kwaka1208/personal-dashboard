@@ -490,6 +490,7 @@ Firestore の `dashboards/{ユーザー ID}` ドキュメント（共有する�
 | 変更が反映されない | Actions タブで最新の「Deploy to GitHub Pages」が成功しているか確認し、キャッシュを無視して再読み込み（Mac は ⌘⇧R、Windows は Ctrl+Shift+R）。GitHub Pages のファイルはブラウザに最大 10 分ほどキャッシュされます |
 | 画面の上に「アドオンを読み込めませんでした」「アドオン『〇〇』を組み込めませんでした」 | `public/addons/index.js` の `import` のファイル名が合っているか、アドオンのファイルに書き間違いがないか（Console に詳しいエラーが出ます）。[WIDGET.md](WIDGET.md) を参照 |
 | ウィジェットに「アドオン『〇〇』が見つかりません」 | そのアドオンを `public/addons/index.js` から外していないか。外してもデータは残っているので、戻せば元どおり表示されます |
+| 「Sync from template」が `Resource not accessible by integration (createPullRequest)` で止まる | Settings → Actions → General → Workflow permissions で **Allow GitHub Actions to create and approve pull requests** にチェックを入れて Save し、もう一度 Run workflow。取り込む内容は `update-from-template` ブランチにできているので、そこから自分で Pull Request を作ってもかまいません |
 | GitHub から「Publicly leaked secret」の警告が届いた | 下の「GitHub から『Publicly leaked secret』の警告が届いたとき」を参照 |
 
 ### GitHub から「Publicly leaked secret」の警告が届いたとき
