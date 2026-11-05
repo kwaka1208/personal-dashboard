@@ -26,6 +26,8 @@ jobs:
       UPSTREAM: https://github.com/kwaka1208/personal-dashboard.git # 本家（テンプレート元）
       BRANCH: update-from-template
       GH_TOKEN: ${{ github.token }}
+      # gh は upstream という名前のリモートがあるとそちらを優先するので、PR を作る先（このリポジトリ）を明示する
+      GH_REPO: ${{ github.repository }}
     steps:
       - uses: actions/checkout@v4
         with:
