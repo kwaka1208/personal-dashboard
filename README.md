@@ -346,6 +346,7 @@ Google カレンダー・Gmail のウィジェットは、ダッシュボード�
 1. 自分のリポジトリの **Actions** タブ → 左の **Sync from template** → **Run workflow** を押します。
    （毎週月曜日の朝にも自動で確認し、更新があれば Pull Request を作ります。作るだけで、勝手にマージはしません。）
 2. 1 分ほどすると **Pull requests** タブに「本家（テンプレート）の更新を取り込む」ができます。中身を確認して **Merge pull request** を押します。
+   （Pull Request を自動で作れなかったときは、その実行の結果のページに **Pull Request を作る** のリンクが出ます。）
 3. マージすると、GitHub Pages に自動で公開し直されます。
 
 - 本家の更新がなければ、何もせずに終わります。
@@ -490,6 +491,7 @@ Firestore の `dashboards/{ユーザー ID}` ドキュメント（共有する�
 | 変更が反映されない | Actions タブで最新の「Deploy to GitHub Pages」が成功しているか確認し、キャッシュを無視して再読み込み（Mac は ⌘⇧R、Windows は Ctrl+Shift+R）。GitHub Pages のファイルはブラウザに最大 10 分ほどキャッシュされます |
 | 画面の上に「アドオンを読み込めませんでした」「アドオン『〇〇』を組み込めませんでした」 | `public/addons/index.js` の `import` のファイル名が合っているか、アドオンのファイルに書き間違いがないか（Console に詳しいエラーが出ます）。[WIDGET.md](WIDGET.md) を参照 |
 | ウィジェットに「アドオン『〇〇』が見つかりません」 | そのアドオンを `public/addons/index.js` から外していないか。外してもデータは残っているので、戻せば元どおり表示されます |
+| 「Sync from template」で Pull Request ができない（実行結果に「Pull Request を自動で作れませんでした」と出る） | 実行結果のページ（Summary）の **Pull Request を作る** のリンクから作れます。次回から自動で作るには、**そのリポジトリの** Settings → Actions → General → Workflow permissions で **Allow GitHub Actions to create and approve pull requests** にチェックを入れて、そのブロックの **Save** を押します |
 | GitHub から「Publicly leaked secret」の警告が届いた | 下の「GitHub から『Publicly leaked secret』の警告が届いたとき」を参照 |
 
 ### GitHub から「Publicly leaked secret」の警告が届いたとき

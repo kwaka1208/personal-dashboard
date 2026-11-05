@@ -26,6 +26,8 @@ jobs:
       UPSTREAM: https://github.com/kwaka1208/personal-dashboard.git # 本家（テンプレート元）
       BRANCH: update-from-template
       GH_TOKEN: ${{ github.token }}
+      # gh は upstream という名前のリモートがあるとそちらを優先するので、PR を作る先（このリポジトリ）を明示する
+      GH_REPO: ${{ github.repository }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -78,6 +80,7 @@ jobs:
       - name: Pull Request を作る（すでにあれば更新するだけ）
         if: steps.check.outputs.needed == 'true'
         run: |
+          COMPARE="${{ github.server_url }}/${{ github.repository }}/compare/${{ github.event.repository.default_branch }}...$BRANCH?expand=1"
           if [ -z "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
             gh pr create --head "$BRANCH" --base "${{ github.event.repository.default_branch }}" \
               --title "本家（テンプレート）の更新を取り込む" \
@@ -87,5 +90,19 @@ jobs:
           - \`public/js/firebase-config.js\` など自分専用のファイルは、衝突した場合は自分の内容を残しています
           - 本家で \`firestore.rules\` が変わったときは、Firebase コンソールのルールにも反映してください
 
-          このプルリクエストは「Sync from template」ワークフローが作りました。"
+          このプルリクエストは「Sync from template」ワークフローが作りました。" \
+            || {
+              # PR を作る許可がないとき（Settings の「Allow GitHub Actions to create and approve pull requests」がオフなど）は、
+              # 失敗にせず、自分で PR を作るリンクを実行結果のページに出す
+              echo "::warning::Pull Request を自動で作れませんでした。取り込む内容はブランチ $BRANCH にできています。実行結果のページのリンクから Pull Request を作ってください。"
+              {
+                echo "## 本家の更新を取り込む準備ができました"
+                echo ""
+                echo "取り込む内容はブランチ \`$BRANCH\` にできています。次のリンクを開いて **Create pull request** → **Merge pull request** を押すと取り込まれます。"
+                echo ""
+                echo "👉 [Pull Request を作る]($COMPARE)"
+                echo ""
+                echo "（次回から自動で Pull Request を作るには、Settings → Actions → General → Workflow permissions で「Allow GitHub Actions to create and approve pull requests」にチェックを入れて **Save** してください）"
+              } >> "$GITHUB_STEP_SUMMARY"
+            }
           fi
